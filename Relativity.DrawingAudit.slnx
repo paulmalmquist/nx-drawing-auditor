@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/Relativity.DrawingAudit.Core/Relativity.DrawingAudit.Core.csproj" />
+  <Project Path="src/Relativity.DrawingAudit.Cli/Relativity.DrawingAudit.Cli.csproj" />
+  <Project Path="src/Relativity.DrawingAudit.NxOpen/Relativity.DrawingAudit.NxOpen.csproj" />
+  <Project Path="tests/Relativity.DrawingAudit.Tests/Relativity.DrawingAudit.Tests.csproj" />
+</Solution>

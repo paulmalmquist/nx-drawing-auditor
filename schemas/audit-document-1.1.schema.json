@@ -1,0 +1,1205 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Relativity Drawing Audit Document 1.1",
+  "description": "Neutral, local-first Siemens NX drawing-audit extraction contract. Engineering conclusions remain the responsibility of the deterministic rules engine and runtime validator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "drawing",
+    "sheets",
+    "features",
+    "extractionMetadata"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.1"
+    },
+    "drawing": {
+      "$ref": "#/$defs/drawingIdentity"
+    },
+    "sheets": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/drawingSheet"
+      }
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/cadFeature"
+      }
+    },
+    "extractionMetadata": {
+      "$ref": "#/$defs/extractionMetadata"
+    },
+    "diagnostics": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/auditDiagnostic"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "ruleMetadata": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ruleMetadata"
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "nullableNonEmptyString": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nullableNumber": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "annotationKind": {
+      "enum": [
+        "dimension",
+        "holeCallout",
+        "featureControlFrame",
+        "datum",
+        "note"
+      ]
+    },
+    "associationStatus": {
+      "description": "Schema 1.1 represents unsupported extraction with extractionState, never associationStatus.",
+      "enum": [
+        "associated",
+        "partiallyAssociated",
+        "broken",
+        "unknown"
+      ]
+    },
+    "extractionState": {
+      "enum": [
+        "complete",
+        "incomplete",
+        "unsupported",
+        "failed"
+      ]
+    },
+    "evidenceConfidence": {
+      "enum": [
+        "unknown",
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "semanticValueKind": {
+      "enum": [
+        "unknown",
+        "dashDesignator",
+        "numericMagnitude",
+        "signedCoordinate"
+      ]
+    },
+    "numericComparisonMode": {
+      "enum": [
+        "magnitude",
+        "signed"
+      ]
+    },
+    "manualOverrideState": {
+      "enum": [
+        "unknown",
+        "notOverridden",
+        "overridden"
+      ]
+    },
+    "evidenceAuthority": {
+      "enum": [
+        "unknown",
+        "directNx",
+        "approvedLocalMapping"
+      ]
+    },
+    "gdtCharacteristic": {
+      "enum": [
+        "none",
+        "straightness",
+        "flatness",
+        "circularity",
+        "cylindricity",
+        "profileOfLine",
+        "profileOfSurface",
+        "angularity",
+        "perpendicularity",
+        "parallelism",
+        "position",
+        "concentricity",
+        "symmetry",
+        "circularRunout",
+        "totalRunout"
+      ]
+    },
+    "findingSeverity": {
+      "enum": [
+        "information",
+        "warning",
+        "error"
+      ]
+    },
+    "ruleApprovalStatus": {
+      "enum": [
+        "pending",
+        "approved",
+        "retired"
+      ]
+    },
+    "drawingIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "partNumber",
+        "revision",
+        "units",
+        "standardProfile"
+      ],
+      "properties": {
+        "partNumber": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "revision": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "units": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "standardProfile": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      }
+    },
+    "drawingSheet": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "views"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "name": {
+          "type": "string"
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/drawingView"
+          }
+        }
+      }
+    },
+    "drawingView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "referencedPart",
+        "scale",
+        "annotations",
+        "evidenceId",
+        "orientation",
+        "transform",
+        "referencedPartIdentity"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "name": {
+          "type": "string"
+        },
+        "referencedPart": {
+          "type": "string"
+        },
+        "scale": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "annotations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/drawingAnnotation"
+          }
+        },
+        "evidenceId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "orientation": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "transform": {
+          "$ref": "#/$defs/drawingViewTransform"
+        },
+        "referencedPartIdentity": {
+          "$ref": "#/$defs/nxObjectReference"
+        }
+      }
+    },
+    "drawingViewTransform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "matrix",
+        "translation"
+      ],
+      "properties": {
+        "matrix": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {
+            "type": "number"
+          }
+        },
+        "translation": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "drawingAnnotation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "displayedText",
+        "displayedValue",
+        "cadMeasuredValue",
+        "comparisonTolerance",
+        "isReference",
+        "isManualOverride",
+        "associationStatus",
+        "associatedFeatureIds",
+        "gdt",
+        "location"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "kind": {
+          "$ref": "#/$defs/annotationKind"
+        },
+        "displayedText": {
+          "type": "string"
+        },
+        "displayedValue": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "cadMeasuredValue": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "comparisonTolerance": {
+          "type": "number",
+          "minimum": 0
+        },
+        "isReference": {
+          "type": "boolean"
+        },
+        "isManualOverride": {
+          "type": "boolean"
+        },
+        "associationStatus": {
+          "$ref": "#/$defs/associationStatus"
+        },
+        "associatedFeatureIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gdt": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/gdtFrame"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "location": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/evidenceLocation"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "valueEvidence": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/annotationValueEvidence"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "definitionIdentity": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/definitionIdentity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "annotationObject": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nxObjectReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "kind"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "dimension",
+                  "holeCallout"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "valueEvidence"
+            ],
+            "properties": {
+              "valueEvidence": {
+                "$ref": "#/$defs/annotationValueEvidence"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "annotationValueEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rawDisplayedText",
+        "valueKind",
+        "measurementProvenance",
+        "manualOverrideState",
+        "associationStatus",
+        "extractionState",
+        "confidence",
+        "authority",
+        "associatedGeometry"
+      ],
+      "properties": {
+        "rawDisplayedText": {
+          "type": "string"
+        },
+        "valueKind": {
+          "enum": [
+            "unknown",
+            "dashDesignator",
+            "numericMagnitude",
+            "signedCoordinate",
+            null
+          ]
+        },
+        "numericComparisonMode": {
+          "enum": [
+            "magnitude",
+            "signed",
+            null
+          ]
+        },
+        "parsedNumericValue": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "parsedDesignation": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "units": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "cadUnits": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "displayResolution": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "nxAutomaticValue": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "nxAutomaticDesignation": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "cadValue": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "cadDesignation": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "measurementProvenance": {
+          "type": "string"
+        },
+        "manualOverrideState": {
+          "enum": [
+            "unknown",
+            "notOverridden",
+            "overridden",
+            null
+          ]
+        },
+        "associationStatus": {
+          "$ref": "#/$defs/associationStatus"
+        },
+        "extractionState": {
+          "$ref": "#/$defs/extractionState"
+        },
+        "confidence": {
+          "enum": [
+            "unknown",
+            "low",
+            "medium",
+            "high",
+            null
+          ]
+        },
+        "authority": {
+          "enum": [
+            "unknown",
+            "directNx",
+            "approvedLocalMapping",
+            null
+          ]
+        },
+        "associatedGeometry": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nxObjectReference"
+          }
+        },
+        "definedFeature": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nxObjectReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "portFamily": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "mappingRevision": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "candidateCadDesignations": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostics": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/auditDiagnostic"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "extractionState"
+            ],
+            "properties": {
+              "extractionState": {
+                "const": "complete"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "rawDisplayedText": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "valueKind": {
+                "enum": [
+                  "dashDesignator",
+                  "numericMagnitude",
+                  "signedCoordinate"
+                ]
+              },
+              "measurementProvenance": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "manualOverrideState": {
+                "enum": [
+                  "notOverridden",
+                  "overridden"
+                ]
+              },
+              "confidence": {
+                "enum": [
+                  "low",
+                  "medium",
+                  "high"
+                ]
+              },
+              "authority": {
+                "enum": [
+                  "directNx",
+                  "approvedLocalMapping"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "extractionState",
+              "associationStatus"
+            ],
+            "properties": {
+              "extractionState": {
+                "const": "complete"
+              },
+              "associationStatus": {
+                "const": "associated"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "definedFeature"
+            ],
+            "properties": {
+              "definedFeature": {
+                "$ref": "#/$defs/nxObjectReference"
+              },
+              "associatedGeometry": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "$ref": "#/$defs/nxObjectReference"
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "extractionState",
+              "valueKind"
+            ],
+            "properties": {
+              "extractionState": {
+                "const": "complete"
+              },
+              "valueKind": {
+                "const": "dashDesignator"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "parsedDesignation",
+              "nxAutomaticDesignation",
+              "cadDesignation"
+            ],
+            "properties": {
+              "parsedDesignation": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "nxAutomaticDesignation": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "cadDesignation": {
+                "$ref": "#/$defs/nonEmptyString"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "extractionState",
+              "valueKind"
+            ],
+            "properties": {
+              "extractionState": {
+                "const": "complete"
+              },
+              "valueKind": {
+                "const": "numericMagnitude"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/completeNumericMagnitudeEvidence"
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "extractionState",
+              "valueKind"
+            ],
+            "properties": {
+              "extractionState": {
+                "const": "complete"
+              },
+              "valueKind": {
+                "const": "signedCoordinate"
+              }
+            }
+          },
+          "then": {
+            "$ref": "#/$defs/completeSignedCoordinateEvidence"
+          }
+        }
+      ]
+    },
+    "completeNumericMagnitudeEvidence": {
+      "required": [
+        "numericComparisonMode",
+        "parsedNumericValue",
+        "units",
+        "cadUnits",
+        "displayResolution",
+        "nxAutomaticValue",
+        "cadValue"
+      ],
+      "properties": {
+        "numericComparisonMode": {
+          "const": "magnitude"
+        },
+        "parsedNumericValue": {
+          "type": "number"
+        },
+        "units": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "cadUnits": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "displayResolution": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "nxAutomaticValue": {
+          "type": "number"
+        },
+        "cadValue": {
+          "type": "number"
+        }
+      }
+    },
+    "completeSignedCoordinateEvidence": {
+      "required": [
+        "numericComparisonMode",
+        "parsedNumericValue",
+        "units",
+        "cadUnits",
+        "displayResolution",
+        "nxAutomaticValue",
+        "cadValue"
+      ],
+      "properties": {
+        "numericComparisonMode": {
+          "const": "signed"
+        },
+        "parsedNumericValue": {
+          "type": "number"
+        },
+        "units": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "cadUnits": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "displayResolution": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "nxAutomaticValue": {
+          "type": "number"
+        },
+        "cadValue": {
+          "type": "number"
+        }
+      }
+    },
+    "nxObjectReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidenceId",
+        "nxTag",
+        "objectType",
+        "owningPart",
+        "directOwnerEvidenceIds"
+      ],
+      "properties": {
+        "evidenceId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "nxTag": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "objectType": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owningPart": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owningRevision": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "directOwnerEvidenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        }
+      }
+    },
+    "definitionIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "featureId",
+        "characteristicKey",
+        "targetSubgeometryIds",
+        "isDirect"
+      ],
+      "properties": {
+        "featureId": {
+          "type": "string"
+        },
+        "characteristicKey": {
+          "type": "string"
+        },
+        "targetSubgeometryIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "isDirect": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "isDirect"
+            ],
+            "properties": {
+              "isDirect": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "featureId": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "characteristicKey": {
+                "$ref": "#/$defs/nonEmptyString"
+              },
+              "targetSubgeometryIds": {
+                "type": "array",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "$ref": "#/$defs/nonEmptyString"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "gdtFrame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "characteristic",
+        "tolerance",
+        "datumReferences",
+        "modifiers"
+      ],
+      "properties": {
+        "characteristic": {
+          "$ref": "#/$defs/gdtCharacteristic"
+        },
+        "tolerance": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "datumReferences": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "modifiers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "cadFeature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "nxTag",
+        "featureType",
+        "owningPart"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "nxTag": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "featureType": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "owningPart": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "objectReference": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/nxObjectReference"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    },
+    "evidenceLocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sheetId",
+        "viewId",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "sheetId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "viewId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "x": {
+          "$ref": "#/$defs/nullableNumber"
+        },
+        "y": {
+          "$ref": "#/$defs/nullableNumber"
+        }
+      }
+    },
+    "auditDiagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "severity",
+        "message"
+      ],
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "severity": {
+          "$ref": "#/$defs/findingSeverity"
+        },
+        "message": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "annotationId": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "evidenceId": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "ruleId": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        }
+      }
+    },
+    "ruleMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "standardName",
+        "edition",
+        "paragraphCitation",
+        "interpretation",
+        "applicability",
+        "permittedExceptions",
+        "severity",
+        "engineeringOwner",
+        "approvalStatus",
+        "evidenceRequirements",
+        "incompleteEvidenceBehavior"
+      ],
+      "properties": {
+        "ruleId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "standardName": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "edition": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "paragraphCitation": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "interpretation": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "applicability": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "permittedExceptions": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "severity": {
+          "$ref": "#/$defs/findingSeverity"
+        },
+        "engineeringOwner": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "approvalDate": {
+          "oneOf": [
+            {
+              "type": "string",
+              "format": "date"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "approvalStatus": {
+          "$ref": "#/$defs/ruleApprovalStatus"
+        },
+        "evidenceRequirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/nonEmptyString"
+          }
+        },
+        "incompleteEvidenceBehavior": {
+          "$ref": "#/$defs/nonEmptyString"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "approvalStatus"
+            ],
+            "properties": {
+              "approvalStatus": {
+                "const": "approved"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "approvalDate"
+            ],
+            "properties": {
+              "approvalDate": {
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "extractionMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceSystem",
+        "extractorVersion",
+        "runId",
+        "extractedAtUtc",
+        "drawingModifiedBefore",
+        "drawingModifiedAfter",
+        "referencedModelModifiedBefore",
+        "referencedModelModifiedAfter"
+      ],
+      "properties": {
+        "sourceSystem": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "extractorVersion": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "runId": {
+          "$ref": "#/$defs/nonEmptyString"
+        },
+        "extractedAtUtc": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "nxRelease": {
+          "$ref": "#/$defs/nullableNonEmptyString"
+        },
+        "drawingModifiedBefore": {
+          "type": "boolean"
+        },
+        "drawingModifiedAfter": {
+          "type": "boolean"
+        },
+        "referencedModelModifiedBefore": {
+          "type": "boolean"
+        },
+        "referencedModelModifiedAfter": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "drawingModifiedBefore": {
+                  "const": false
+                },
+                "drawingModifiedAfter": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "drawingModifiedBefore": {
+                  "const": true
+                },
+                "drawingModifiedAfter": {
+                  "const": true
+                }
+              }
+            }
+          ]
+        },
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "referencedModelModifiedBefore": {
+                  "const": false
+                },
+                "referencedModelModifiedAfter": {
+                  "const": false
+                }
+              }
+            },
+            {
+              "properties": {
+                "referencedModelModifiedBefore": {
+                  "const": true
+                },
+                "referencedModelModifiedAfter": {
+                  "const": true
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

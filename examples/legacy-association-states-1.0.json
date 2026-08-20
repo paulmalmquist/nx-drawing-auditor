@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "1.0",
+  "drawing": {
+    "partNumber": "LEGACY-ASSOCIATION-STATES",
+    "revision": "A",
+    "units": "mm",
+    "standardProfile": "LEGACY-1.0"
+  },
+  "sheets": [
+    {
+      "id": "S1",
+      "name": "SHEET 1",
+      "views": [
+        {
+          "id": "V1",
+          "name": "FRONT",
+          "referencedPart": "LEGACY-ASSOCIATION-STATES.prt",
+          "scale": 1.0,
+          "annotations": [
+            {
+              "id": "DIM-BROKEN",
+              "kind": "dimension",
+              "displayedText": "10",
+              "displayedValue": 10,
+              "cadMeasuredValue": null,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "broken",
+              "associatedFeatureIds": [],
+              "gdt": null,
+              "location": { "sheetId": "S1", "viewId": "V1", "x": 10, "y": 20 }
+            },
+            {
+              "id": "DIM-UNSUPPORTED",
+              "kind": "dimension",
+              "displayedText": "20",
+              "displayedValue": 20,
+              "cadMeasuredValue": null,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "unsupported",
+              "associatedFeatureIds": [],
+              "gdt": null,
+              "location": { "sheetId": "S1", "viewId": "V1", "x": 30, "y": 20 }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "features": []
+}

@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+artifacts/
+third_party/
+*.user
+*.prt
+*.pdf
+*.step
+*.stp

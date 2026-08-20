@@ -1,0 +1,130 @@
+{
+  "schemaVersion": "1.1",
+  "drawing": {
+    "partNumber": "PORT-DASH-REGRESSION",
+    "revision": "A",
+    "units": "in",
+    "standardProfile": "LOCAL-PILOT-PENDING-APPROVAL"
+  },
+  "sheets": [
+    {
+      "id": "SHEET-1",
+      "name": "SHEET 1",
+      "views": [
+        {
+          "id": "VIEW-RIGHT",
+          "name": "RIGHT",
+          "referencedPart": "PORT-DASH-REGRESSION.prt",
+          "scale": 1.0,
+          "annotations": [
+            {
+              "id": "PORT-CALLOUT-1",
+              "kind": "holeCallout",
+              "displayedText": "\u2212 12",
+              "displayedValue": null,
+              "cadMeasuredValue": null,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "associated",
+              "associatedFeatureIds": ["PORT-DASH-REGRESSION:A:feature:2001"],
+              "gdt": null,
+              "location": {
+                "sheetId": "SHEET-1",
+                "viewId": "VIEW-RIGHT",
+                "x": 120,
+                "y": 80
+              },
+              "annotationObject": {
+                "evidenceId": "PORT-DASH-REGRESSION:A:annotation:1001",
+                "nxTag": "1001",
+                "objectType": "NXOpen.Annotations.Note",
+                "owningPart": "PORT-DASH-REGRESSION",
+                "owningRevision": "A",
+                "directOwnerEvidenceIds": ["PORT-DASH-REGRESSION:A:view:101"]
+              },
+              "definitionIdentity": {
+                "featureId": "PORT-DASH-REGRESSION:A:feature:2001",
+                "characteristicKey": "port.dashDesignation",
+                "targetSubgeometryIds": ["PORT-DASH-REGRESSION:A:face:3001"],
+                "isDirect": true
+              },
+              "valueEvidence": {
+                "rawDisplayedText": "\u2212 12",
+                "valueKind": "dashDesignator",
+                "parsedDesignation": "-12",
+                "nxAutomaticDesignation": "-12",
+                "cadDesignation": "-16",
+                "measurementProvenance": "Direct NX port-designation feature parameter",
+                "manualOverrideState": "notOverridden",
+                "associationStatus": "associated",
+                "extractionState": "complete",
+                "confidence": "high",
+                "authority": "directNx",
+                "associatedGeometry": [
+                  {
+                    "evidenceId": "PORT-DASH-REGRESSION:A:face:3001",
+                    "nxTag": "3001",
+                    "objectType": "NXOpen.Face",
+                    "owningPart": "PORT-DASH-REGRESSION",
+                    "owningRevision": "A",
+                    "directOwnerEvidenceIds": ["PORT-DASH-REGRESSION:A:feature:2001"]
+                  }
+                ],
+                "definedFeature": {
+                  "evidenceId": "PORT-DASH-REGRESSION:A:feature:2001",
+                  "nxTag": "2001",
+                  "objectType": "NXOpen.Features.Feature",
+                  "owningPart": "PORT-DASH-REGRESSION",
+                  "owningRevision": "A",
+                  "directOwnerEvidenceIds": []
+                }
+              }
+            }
+          ],
+          "evidenceId": "PORT-DASH-REGRESSION:A:view:101",
+          "orientation": "RIGHT",
+          "transform": {
+            "matrix": [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            "translation": [0, 0, 0]
+          },
+          "referencedPartIdentity": {
+            "evidenceId": "PORT-DASH-REGRESSION:A:part:1",
+            "nxTag": "1",
+            "objectType": "NXOpen.Part",
+            "owningPart": "PORT-DASH-REGRESSION",
+            "owningRevision": "A",
+            "directOwnerEvidenceIds": []
+          }
+        }
+      ]
+    }
+  ],
+  "features": [
+    {
+      "id": "PORT-DASH-REGRESSION:A:feature:2001",
+      "nxTag": "2001",
+      "featureType": "port",
+      "owningPart": "PORT-DASH-REGRESSION",
+      "objectReference": {
+        "evidenceId": "PORT-DASH-REGRESSION:A:feature:2001",
+        "nxTag": "2001",
+        "objectType": "NXOpen.Features.Feature",
+        "owningPart": "PORT-DASH-REGRESSION",
+        "owningRevision": "A",
+        "directOwnerEvidenceIds": []
+      }
+    }
+  ],
+  "extractionMetadata": {
+    "sourceSystem": "NX regression fixture",
+    "extractorVersion": "1.1-test",
+    "runId": "PORT-DASH-REGRESSION-001",
+    "extractedAtUtc": "2026-08-20T20:00:00Z",
+    "nxRelease": "fixture-only",
+    "drawingModifiedBefore": false,
+    "drawingModifiedAfter": false,
+    "referencedModelModifiedBefore": false,
+    "referencedModelModifiedAfter": false
+  }
+}

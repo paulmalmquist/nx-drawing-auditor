@@ -1,0 +1,107 @@
+{
+  "schemaVersion": "1.0",
+  "drawing": {
+    "partNumber": "DEMO-NX-DRAWING",
+    "revision": "A",
+    "units": "mm",
+    "standardProfile": "ASME-Y14.100-2013/Y14.5-2009"
+  },
+  "sheets": [
+    {
+      "id": "SHEET-1",
+      "name": "SHEET 1",
+      "views": [
+        {
+          "id": "VIEW-LEFT",
+          "name": "LEFT",
+          "referencedPart": "DEMO-NX-MODEL.prt",
+          "scale": 1.0,
+          "annotations": [
+            {
+              "id": "DIM-PORT-DEPTH",
+              "kind": "dimension",
+              "displayedText": "-12",
+              "displayedValue": -12,
+              "cadMeasuredValue": -16,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "associated",
+              "associatedFeatureIds": ["PORT-1"],
+              "gdt": null,
+              "location": { "sheetId": "SHEET-1", "viewId": "VIEW-LEFT", "x": 120, "y": 80 }
+            },
+            {
+              "id": "DIM-HOLE-LEFT",
+              "kind": "dimension",
+              "displayedText": "10",
+              "displayedValue": 10,
+              "cadMeasuredValue": 12,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "associated",
+              "associatedFeatureIds": ["HOLE-1"],
+              "gdt": null,
+              "location": { "sheetId": "SHEET-1", "viewId": "VIEW-LEFT", "x": 180, "y": 90 }
+            }
+          ]
+        },
+        {
+          "id": "VIEW-RIGHT",
+          "name": "RIGHT",
+          "referencedPart": "DEMO-NX-MODEL.prt",
+          "scale": 1.0,
+          "annotations": [
+            {
+              "id": "DIM-HOLE-RIGHT",
+              "kind": "dimension",
+              "displayedText": "12",
+              "displayedValue": 12,
+              "cadMeasuredValue": 12,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "associated",
+              "associatedFeatureIds": ["HOLE-1"],
+              "gdt": null,
+              "location": { "sheetId": "SHEET-1", "viewId": "VIEW-RIGHT", "x": 420, "y": 90 }
+            }
+          ]
+        },
+        {
+          "id": "VIEW-TOP",
+          "name": "TOP",
+          "referencedPart": "DEMO-NX-MODEL.prt",
+          "scale": 1.0,
+          "annotations": [
+            {
+              "id": "FCF-FLATNESS-1",
+              "kind": "featureControlFrame",
+              "displayedText": "FLATNESS|0.1|A|B",
+              "displayedValue": null,
+              "cadMeasuredValue": null,
+              "comparisonTolerance": 0.000001,
+              "isReference": false,
+              "isManualOverride": false,
+              "associationStatus": "associated",
+              "associatedFeatureIds": ["FACE-1"],
+              "gdt": {
+                "characteristic": "flatness",
+                "tolerance": 0.1,
+                "datumReferences": ["A", "B"],
+                "modifiers": []
+              },
+              "location": { "sheetId": "SHEET-1", "viewId": "VIEW-TOP", "x": 250, "y": 280 }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "features": [
+    { "id": "PORT-1", "nxTag": "1001", "featureType": "port", "owningPart": "DEMO-NX-MODEL.prt" },
+    { "id": "HOLE-1", "nxTag": "1002", "featureType": "hole", "owningPart": "DEMO-NX-MODEL.prt" },
+    { "id": "FACE-1", "nxTag": "1003", "featureType": "planarFace", "owningPart": "DEMO-NX-MODEL.prt" }
+  ]
+}

@@ -1,0 +1,98 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>12.0</LangVersion>
+    <EnableNxOpen Condition="'$(EnableNxOpen)' == ''">false</EnableNxOpen>
+    <PlatformTarget Condition="'$(EnableNxOpen)' == 'true'">x64</PlatformTarget>
+    <DefineConstants Condition="'$(EnableNxOpen)' == 'true'">$(DefineConstants);NXOPEN_ENABLED</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Relativity.DrawingAudit.Core/Relativity.DrawingAudit.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EnableNxOpen)' != 'true'">
+    <Compile Remove="Workstation\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(EnableNxOpen)' == 'true'">
+    <Compile Remove="NxOpenExtractor.cs" />
+    <Reference Include="NXOpen">
+      <HintPath>$(NXOpenDllPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="NXOpen.UF">
+      <HintPath>$(NXOpenUfDllPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+  <!--
+    This target is deliberately strict. Do not replace it with a mirror/package
+    reference or suppress assembly-resolution warnings. Find-NxOpen.ps1 and
+    Build-NxOpenAdapter.ps1 supply these properties from the gated workstation
+    manifest created for the installed NX release.
+  -->
+  <Target Name="ValidateNxOpenWorkstationGate"
+          BeforeTargets="ResolveAssemblyReferences"
+          Condition="'$(EnableNxOpen)' == 'true'">
+    <Error Condition="'$(NxWorkstationGatePassed)' != 'true'"
+           Text="NXOPEN_GATE_001: NxWorkstationGatePassed=true is required. Run scripts/Find-NxOpen.ps1, resolve every blocker, then build with scripts/Build-NxOpenAdapter.ps1." />
+    <Error Condition="'$(NxEnvironmentManifestPath)' == '' or !Exists('$(NxEnvironmentManifestPath)')"
+           Text="NXOPEN_GATE_002: NxEnvironmentManifestPath must name the existing gated nx-environment.json file." />
+    <Error Condition="'$(NXOpenDllPath)' == ''"
+           Text="NXOPEN_GATE_003: NXOpenDllPath must be the exact absolute path reported by the workstation manifest." />
+    <Error Condition="'$(NXOpenUfDllPath)' == ''"
+           Text="NXOPEN_GATE_004: NXOpenUfDllPath must be the exact absolute path reported by the workstation manifest." />
+    <Error Condition="'$(NXOpenDllPath)' != '' and !$([System.IO.Path]::IsPathFullyQualified('$(NXOpenDllPath)'))"
+           Text="NXOPEN_GATE_005: NXOpenDllPath must be absolute." />
+    <Error Condition="'$(NXOpenUfDllPath)' != '' and !$([System.IO.Path]::IsPathFullyQualified('$(NXOpenUfDllPath)'))"
+           Text="NXOPEN_GATE_006: NXOpenUfDllPath must be absolute." />
+    <Error Condition="'$(NXOpenDllPath)' != '' and !Exists('$(NXOpenDllPath)')"
+           Text="NXOPEN_GATE_007: NXOpen.dll was not found at '$(NXOpenDllPath)'." />
+    <Error Condition="'$(NXOpenUfDllPath)' != '' and !Exists('$(NXOpenUfDllPath)')"
+           Text="NXOPEN_GATE_008: NXOpen.UF.dll was not found at '$(NXOpenUfDllPath)'." />
+    <Error Condition="'$(NXOpenDllPath)' != '' and '$([System.IO.Path]::GetFileName('$(NXOpenDllPath)'))' != 'NXOpen.dll'"
+           Text="NXOPEN_GATE_009: NXOpenDllPath must end with NXOpen.dll." />
+    <Error Condition="'$(NXOpenUfDllPath)' != '' and '$([System.IO.Path]::GetFileName('$(NXOpenUfDllPath)'))' != 'NXOpen.UF.dll'"
+           Text="NXOPEN_GATE_010: NXOpenUfDllPath must end with NXOpen.UF.dll." />
+    <Error Condition="'$(NxTemplateTargetFramework)' == ''"
+           Text="NXOPEN_GATE_011: NxTemplateTargetFramework must come from the installed NX template." />
+    <Error Condition="'$(NxTemplateTargetFramework)' != '' and '$(NxTemplateTargetFramework)' != '$(TargetFramework)'"
+           Text="NXOPEN_GATE_012: Installed NX template target '$(NxTemplateTargetFramework)' does not match adapter target '$(TargetFramework)'. Stop and re-plan; do not retarget in flight." />
+    <Error Condition="'$(NxTemplatePlatformTarget)' == ''"
+           Text="NXOPEN_GATE_013: NxTemplatePlatformTarget must come from the installed NX template." />
+    <Error Condition="'$(NxTemplatePlatformTarget)' != '' and '$(NxTemplatePlatformTarget)' != '$(PlatformTarget)'"
+           Text="NXOPEN_GATE_014: Installed NX template platform '$(NxTemplatePlatformTarget)' does not match adapter platform '$(PlatformTarget)'." />
+
+    <PropertyGroup Condition="'$(NXOpenDllPath)' != ''">
+      <_NxOpenDirectory>$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetFullPath('$(NXOpenDllPath)'))))</_NxOpenDirectory>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(NXOpenUfDllPath)' != ''">
+      <_NxOpenUfDirectory>$([System.IO.Path]::GetDirectoryName($([System.IO.Path]::GetFullPath('$(NXOpenUfDllPath)'))))</_NxOpenUfDirectory>
+    </PropertyGroup>
+    <Error Condition="'$(_NxOpenDirectory)' != '' and '$(_NxOpenUfDirectory)' != '' and '$(_NxOpenDirectory)' != '$(_NxOpenUfDirectory)'"
+           Text="NXOPEN_GATE_015: NXOpen.dll and NXOpen.UF.dll must come from the same installed managed-assembly directory." />
+
+    <GetAssemblyIdentity AssemblyFiles="$(NXOpenDllPath)"
+                         Condition="Exists('$(NXOpenDllPath)')">
+      <Output TaskParameter="Assemblies" ItemName="_NxOpenAssemblyIdentity" />
+    </GetAssemblyIdentity>
+    <GetAssemblyIdentity AssemblyFiles="$(NXOpenUfDllPath)"
+                         Condition="Exists('$(NXOpenUfDllPath)')">
+      <Output TaskParameter="Assemblies" ItemName="_NxOpenUfAssemblyIdentity" />
+    </GetAssemblyIdentity>
+    <PropertyGroup>
+      <_NxOpenAssemblyName>@(_NxOpenAssemblyIdentity-&gt;'%(Name)')</_NxOpenAssemblyName>
+      <_NxOpenAssemblyVersion>@(_NxOpenAssemblyIdentity-&gt;'%(Version)')</_NxOpenAssemblyVersion>
+      <_NxOpenUfAssemblyName>@(_NxOpenUfAssemblyIdentity-&gt;'%(Name)')</_NxOpenUfAssemblyName>
+      <_NxOpenUfAssemblyVersion>@(_NxOpenUfAssemblyIdentity-&gt;'%(Version)')</_NxOpenUfAssemblyVersion>
+    </PropertyGroup>
+    <Error Condition="'$(_NxOpenAssemblyName)' != '' and '$(_NxOpenAssemblyName)' != 'NXOpen'"
+           Text="NXOPEN_GATE_016: The NXOpenDllPath assembly identity is '$(_NxOpenAssemblyName)', not 'NXOpen'." />
+    <Error Condition="'$(_NxOpenUfAssemblyName)' != '' and '$(_NxOpenUfAssemblyName)' != 'NXOpen.UF'"
+           Text="NXOPEN_GATE_017: The NXOpenUfDllPath assembly identity is '$(_NxOpenUfAssemblyName)', not 'NXOpen.UF'." />
+    <Error Condition="'$(_NxOpenAssemblyVersion)' != '' and '$(_NxOpenUfAssemblyVersion)' != '' and '$(_NxOpenAssemblyVersion)' != '$(_NxOpenUfAssemblyVersion)'"
+           Text="NXOPEN_GATE_018: NXOpen assembly version '$(_NxOpenAssemblyVersion)' does not match NXOpen.UF version '$(_NxOpenUfAssemblyVersion)'." />
+  </Target>
+</Project>
